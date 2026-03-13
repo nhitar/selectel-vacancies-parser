@@ -7,4 +7,4 @@ pydantic
 pydantic-settings
 httpx
 apscheduler
-fastapi==999.0.0; python_version < "3.8"
+fastapi==0.124.4; python_version < "3.8"
