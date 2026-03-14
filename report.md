@@ -247,7 +247,7 @@ from app.core.config import settings # noqa: F401
 
 ![PUT /api/v1/vacancies/{vacancy_id}/](images/put-vacancy.png)
 
-`GET /api/v1/vacancies/{vacancy_id}/`:
+Проверка `PUT` запроса через `GET /api/v1/vacancies/{vacancy_id}/`:
 
 ![GET /api/v1/vacancies/{vacancy_id}/](images/get-vacancy-after-put.png)
 
@@ -259,6 +259,6 @@ from app.core.config import settings # noqa: F401
 
 ![POST /api/v1/parse/](images/post-parse.png)
 
-`POST /api/v1/parse/` консольный вывод:
+`POST /api/v1/parse/` консольный вывод, подтянулась удалённая вакансия:
 
 ![POST /api/v1/parse/ консольный вывод](images/post-parse-console.png)
