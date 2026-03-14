@@ -40,7 +40,7 @@ async def parse_and_store(session: AsyncSession) -> int:
                             "title": item.title,
                             "timetable_mode_name": item.timetable_mode.name,
                             "tag_name": item.tag.name,
-                            "city_name": "" if item.city is None else item.city.name.strip(),
+                            "city_name": None if item.city is None else item.city.name.strip(),
                             "published_at": item.published_at,
                             "is_remote_available": item.is_remote_available,
                             "is_hot": item.is_hot,
