@@ -13,8 +13,14 @@ class Settings(BaseSettings):
         "postgresql+asyncpg://postgres:postgres@db:5432/postgres_typo",
         validation_alias="DATABASE_URL",
     )
-    log_level: str = "INFO"
-    parse_schedule_minutes: int = 5
+    log_level: str = Field(
+        "INFO",
+        validation_alias="LOG_LEVEL",
+    )
+    parse_schedule_minutes: int = Field(
+        5,
+        validation_alias="PARSE_SCHEDULE_MINUTES",
+    )
 
 
 settings = Settings()
