@@ -1,12 +1,12 @@
-### Отчёт по отладке приложения Пивоева Никиты Михайловича
+## Отчёт по отладке приложения Пивоева Никиты Михайловича
 
-#### Использование `LLM`.
+### Использование `LLM`.
 
 Я воспользовался `Deepseek` до первого запуска проекта, чтобы получить краткое представление о стеке технологий проекта, в частности `fastapi`, поскольку раньше не работал с данным фреймворком (только с `django`).
 
 Также когда искал последние неявные баги в проекте (в частности №6 и №8) и находил участки кода, в которых по ощущениям что-то не так, обращался к `LLM`, чтобы убедиться, что в коде действительно баг.
 
-#### Шаг 0: изучение структуры проекта.
+### Шаг 0: изучение структуры проекта.
 
 * Что сделал: до начала работы зашёл в `requirements.txt`, прочитал несколько статей на `habr` о `fastapi` и сопутствующих технологий; просмотрел структуру проекта.
 
@@ -27,7 +27,7 @@ fastapi==999.0.0; python_version < "3.8"
 fastapi==0.124.4; python_version < "3.8"
 ```
 
-#### Шаг 1: анализ и запуск.
+### Шаг 1: анализ и запуск.
 
 * Что сделал: запустил `docker compose up --build`;
 * Проблема: контейнер приложения упал во время инициализации `alembic`.
@@ -55,7 +55,11 @@ database_url: str = Field(
 )
 ```
 
-#### Шаг 2: повторный запуск.
+* Консольный вывод ошибки:
+
+![Консольный вывод](images/settings-error.png)
+
+### Шаг 2: повторный запуск.
 
 * Что сделал: запустил `docker compose up --build`;
 * Проблема: парсинг вакансий падает с ошибкой;
@@ -77,7 +81,11 @@ database_url: str = Field(
 "city_name": None if item.city is None else item.city.name.strip(),
 ```
 
-#### Шаг 3: запуск после фикса парсера.
+* Консольный вывод ошибки:
+
+![Консольный вывод](images/city-name-error.png)
+
+### Шаг 3: запуск после фикса парсера.
 
 * Что сделал: запустил `docker compose up --build`, контейнеры работают без ошибок;
 * Проблема: вывод контейнера забивается из-за неправильно настроенного таймера у фонового парсинга;
@@ -99,7 +107,11 @@ seconds=settings.parse_schedule_minutes,
 minutes=settings.parse_schedule_minutes,
 ```
 
-#### Шаг 4: исправление оставшихся найденных багов.
+* Консольный вывод ошибки:
+
+![Консольный вывод](images/scheduler-interval-error.png)
+
+### Шаг 4: исправление оставшихся найденных багов.
 
 #### Исправление бага №5.
 
@@ -190,7 +202,7 @@ parse_schedule_minutes: int = Field(
 )
 ```
 
-#### Остальные правки.
+### Остальные правки.
 
 * Описание проблемы: в сервисе парсинга не используются часть импортируемых объектов;
 * Решение: добавил пометки для линтеров, но можно и убрать лишние импорты;
@@ -209,10 +221,44 @@ from typing import List # noqa: F401
 from app.core.config import settings # noqa: F401
 ```
 
-#### Итог.
+### Итог.
 
 * Оба контейнера запускаются без ошибок и работают стабильно;
 * Фоновый и ручной парсинг работают без падений, данные сохраняются в БД;
 * Фоновый парсинг работает по заявленному расписанию (5 минут);
 * Все эндпоинты работают корректно;
 * Приложение возвращает корректные HTTP-статусы и данные.
+
+### Скриншоты Swagger UI.
+
+`GET /api/v1/vacancies/`:
+
+![GET /api/v1/vacancies/](images/get-vacancies.png)
+
+`POST /api/v1/vacancies/`:
+
+![POST /api/v1/vacancies/](images/post-vacancies.png)
+
+`GET /api/v1/vacancies/{vacancy_id}/`:
+
+![GET /api/v1/vacancies/{vacancy_id}/](images/get-vacancy.png)
+
+`PUT /api/v1/vacancies/{vacancy_id}/`:
+
+![PUT /api/v1/vacancies/{vacancy_id}/](images/put-vacancy.png)
+
+`GET /api/v1/vacancies/{vacancy_id}/`:
+
+![GET /api/v1/vacancies/{vacancy_id}/](images/get-vacancy-after-put.png)
+
+`DELETE /api/v1/vacancies/{vacancy_id}/`:
+
+![DELETE /api/v1/vacancies/{vacancy_id}/](images/delete-vacancy.png)
+
+`POST /api/v1/parse/`:
+
+![POST /api/v1/parse/](images/post-parse.png)
+
+`POST /api/v1/parse/` консольный вывод:
+
+![POST /api/v1/parse/ консольный вывод](images/post-parse-console.png)
